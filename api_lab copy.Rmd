@@ -1,0 +1,66 @@
+---
+title: "Assignment 2.1-2.2"
+author: "Felicia Cruz"
+date: "10/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+library(metajam)
+library(here)
+```
+
+## 2.1 - `dataRetrieval`
+
+## Plot the discharge time-series for the Ventura River from 2019-10-01 to 2020-10-05
+```{r}
+ventura_discharge <- readNWISdv(siteNumber = "11118500", parameterCd = "00060", startDate = "",
+           endDate = "2020-10-05")
+
+ggplot(data = ventura_discharge, aes(x = Date, y = X_00060_00003)) +
+  geom_line() +
+  labs(title = "Ventura River Discharge",
+       y = (paste(c("Discharge", expression(ft^3/s))))) 
+  
+```
+
+## 2.2 - `metajam`
+
+## metajam 
+ - relies on the dataONE API to download data and metadata into your R Environment
+ 
+ Data package: https://doi.org/10.5063/F1N58JPP
+
+```{r}
+library(metajam)
+library(here)
+
+```
+
+```{r download_data, error=TRUE}
+data_url_households <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8"
+path <- here::here()
+
+metajam::download_d1_data(data_url_households, path)
+
+```
+
+## Read the data
+
+```{r}
+
+data_path <- here("doi_10.5063_F1CJ8BPH__household_language__csv")
+# returns a list of all of the data in the folder 
+all_data <- metajam::read_d1_files(data_path)
+
+#select just the attribute_metadata 
+all_data$attribute_metadata %>% View()
+
+#select the data from the list of all_data
+hh_data <- all_data$data 
