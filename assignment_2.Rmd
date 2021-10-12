@@ -2,14 +2,17 @@
 title: "Assignment 2.1-2.2"
 author: "Felicia Cruz"
 date: "10/6/2021"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+  
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, include = FALSE}
 library(dataRetrieval)
 library(tidyverse)
 library(metajam)
@@ -18,7 +21,8 @@ library(here)
 
 ## 2.1 - `dataRetrieval`
 
-## Discharge time series for Ventura and Santa Paula separately 
+1. Add the Santa Paula Creek gauge to the class exercise
+
 ```{r}
 ventura_discharge <- readNWISdv(siteNumber = "11118500", parameterCd = "00060", startDate = "2019-10-01",
            endDate = "2020-10-05")
@@ -27,7 +31,9 @@ santa_paula_discharge <- readNWISdv(siteNumber = "11113500",
                                     parameterCd = "00060",
                                     startDate = "2019-10-01",
            endDate = "2020-10-05")
-
+```
+```{r}
+# one plot for each location 
 ggplot(data = ventura_discharge, aes(x = Date, y = X_00060_00003)) +
   geom_line() +
   labs(title = "Ventura River Discharge",
@@ -37,11 +43,10 @@ ggplot(data = santa_paula_discharge, aes(x = Date, y = X_00060_00003)) +
   geom_line() + 
   labs(title = "Santa Paula Discharge",
        y = "Discharge (cubic ft/s)")
-  
-  
 ```
 
-## Query both sites at once 
+
+2. Query both sites at once 
 
 - In order to query both sites at once, you have to pass in a vector including both site numbers in the `siteNumber` argument
 ```{r}
@@ -76,7 +81,9 @@ combined_plot
 ```
 
 
-Create a plot showing any stream flow response to the rain of last night (10/04). Determine at what time did the stream flow peaked (if any) at the two locations?
+3. Create a plot showing any stream flow response to the rain of last night (10/04). Determine at what time the stream flow peaked (if any) at the two locations.
+
+- From the plot below showing stream flow response to the storm on October 4, it looks like stream flow increased gradually at the Ventura location starting around 6:00 pm with a peak around 10:00 pm. From there, the level stayed constant for the rest of the night. For the Santa Paula location, stream flow also started increasing slowly at around 6:00 pm, reaching a peak after midnight. Overall, while both sites followed generally the same pattern, the Ventura site stream flow levels were consistently much higher at every point in time. 
 
 ```{r}
 # getting instantaneous data for Oct 4 to look at water discharge 
@@ -99,32 +106,33 @@ ggplot(combined_current, aes(x = dateTime, y = discharge)) +
   labs(y = "Discharge (cubic ft/s)",
        color = "Site",
        title = "Water Discharge",
-       subtitle = "2021-10-03 - 2021-10-05") 
+       subtitle = "2021-10-03 - 2021-10-05",
+       x = "Time") 
 ```
 
 
 ## 2.2 - `metajam`
-Finish the exercise we started during the lab session to use metajam to download the Alaskan household languages data from DataONE.
-
-## metajam 
-```{r}
+```{r, echo = FALSE}
 library(metajam)
 library(here)
 ```
 
-##Alaskan Household Language Data
+## Alaskan Household Language Data
 Data Package: https://doi.org/10.5063/F1N58JPP
 
-## Download the data using the API
-```{r download_data, error=TRUE}
-data_url_households <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8"
+1. Download the data using the API
+```{r download_data, error=TRUE, message=FALSE}
+data_url_households <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8" 
 path <- here::here()
 
 metajam::download_d1_data(data_url_households, path)
 ```
 
-## Read the data
-```{r}
+2. Read the data
+
+- see all of the data in the folder
+- look at metadata 
+```{r, message = FALSE}
 data_path <- here("doi_10.5063_F1CJ8BPH__household_language__csv")
 
 # returns a list of all of the data in the folder 
@@ -137,11 +145,11 @@ all_data$attribute_metadata %>% View()
 hh_data <- all_data$data 
 ```
 
-## Create a plot by year from 2009 to 2015 showing the average percentage of household speaking only English at the State level (one data point per year)
-```{r}
-hh_data <- hh_data %>% 
-  mutate(eng_percentage = speak_only_english / total)
+3. Create a plot by year from 2009 to 2015 showing the average percentage of households speaking only English at the State level (one data point per year).
 
+- From the plot below, we can see that from 2009 to 2015 there was an upward trend in the average percentage of Alaskan households that spoke only English. While there was a small decline from 2009 to 2010, after that point the percentage steadily rose, reaching a max value of just over 72% in 2015. 
+
+```{r}
 hh_data_summary <- hh_data %>% 
   select(Year, SASAP.Region, total, speak_only_english) %>%
   filter(Year >= 2009) %>% 
@@ -152,9 +160,10 @@ hh_data_summary <- hh_data %>%
 
 ggplot(data = hh_data_summary, aes(x = Year, y = mean)) +
   geom_line() +
+  ylim(.65, .75) +
   labs(title = "Average Percentage of Alaskan Households Speaking Only English",
-       subtitle = "2009 - 2015")
-  
+       subtitle = "2009 - 2015",
+       y = "Mean Percentage")
 ```
 
 
