@@ -280,24 +280,8 @@ ggplot(combined_current, aes(x = dateTime, y = discharge)) +
 <pre class="r"><code>data_url_households &lt;- &quot;https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8&quot; 
 path &lt;- here::here()
 
-metajam::download_d1_data(data_url_households, path)</code></pre>
-<pre><code>## 
-## urn:uuid:7fc6f6db-c5ea-426a-a743-1f2edafb43b8
-## is the latest version for identifier
-## urn:uuid:7fc6f6db-c5ea-426a-a743-1f2edafb43b8</code></pre>
-<pre><code>## Warning in metajam::download_d1_data(data_url_households, path): multiple metadata records found:
-## doi:10.5063/F1CJ8BPH
-## doi:10.5063/F1N58JPP
-## doi:10.5063/F11G0JHX
-## The first record was used</code></pre>
-<pre><code>## 
-## Downloading metadata doi:10.5063/F1CJ8BPH ...</code></pre>
-<pre><code>## Download metadata complete</code></pre>
-<pre><code>## 
-## Downloading data urn:uuid:7fc6f6db-c5ea-426a-a743-1f2edafb43b8 ...</code></pre>
-<pre><code>## Error in metajam::download_d1_data(data_url_households, path): This dataset has already been downloaded here:
-## /Users/feliciacruz/Documents/MEDS/Fall &#39;21/EDS_213_metadata_standards/eds-213-assignment-2/doi_10.5063_F1CJ8BPH__household_language__csv
-## Please delete or move the folder to download the dataset again.</code></pre>
+# metajam::download_d1_data(data_url_households, path)</code></pre>
+<pre class="r"><code>metajam::download_d1_data(data_url_households, path)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Read the data</li>
 </ol>
@@ -308,10 +292,31 @@ metajam::download_d1_data(data_url_households, path)</code></pre>
 <pre class="r"><code>data_path &lt;- here(&quot;doi_10.5063_F1CJ8BPH__household_language__csv&quot;)
 
 # returns a list of all of the data in the folder 
-all_data &lt;- metajam::read_d1_files(data_path)
-
-#select just the attribute_metadata 
-all_data$attribute_metadata %&gt;% View()
+all_data &lt;- metajam::read_d1_files(data_path)</code></pre>
+<pre><code>## Rows: 50 Columns: 11</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (11): attributeName, attributeDefinition, formatString, measurementScale...</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre><code>## Rows: 20 Columns: 2</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (2): name, value</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre><code>## Rows: 3142 Columns: 50</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (3): SASAP.Region, city, data_file_year
+## dbl (47): Year, lat, lng, total, speak_only_english, german, yiddish, greek,...</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>#select just the attribute_metadata 
+attribute_metadata &lt;- all_data$attribute_metadata
 
 #select the data from the list of all_data
 hh_data &lt;- all_data$data </code></pre>

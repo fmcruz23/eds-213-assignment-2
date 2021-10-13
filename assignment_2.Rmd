@@ -121,25 +121,30 @@ library(here)
 Data Package: https://doi.org/10.5063/F1N58JPP
 
 1. Download the data using the API
-```{r download_data, error=TRUE}
+```{r download_data}
 data_url_households <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8" 
 path <- here::here()
 
+# metajam::download_d1_data(data_url_households, path)
+```
+```{r, eval = FALSE}
 metajam::download_d1_data(data_url_households, path)
 ```
+
+
 
 2. Read the data
 
 - see all of the data in the folder
 - look at metadata 
-```{r, error = TRUE, message = FALSE}
+```{r}
 data_path <- here("doi_10.5063_F1CJ8BPH__household_language__csv")
 
 # returns a list of all of the data in the folder 
 all_data <- metajam::read_d1_files(data_path)
 
 #select just the attribute_metadata 
-all_data$attribute_metadata %>% View()
+attribute_metadata <- all_data$attribute_metadata
 
 #select the data from the list of all_data
 hh_data <- all_data$data 
